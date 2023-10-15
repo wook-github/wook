@@ -30,6 +30,7 @@ public class WcController {
 
 	@Resource MappingJackson2JsonView	jsonView;
 
+	/* 공지사항 화면 조회 */
 	@RequestMapping(value = "/wcBbsMa", method = RequestMethod.GET)
 	public ModelAndView wcBbsMa(@RequestParam HashMap<String, Object> param, ModelAndView model) throws Exception {
 		model.addObject("info", param);
