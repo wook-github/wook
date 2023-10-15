@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wook.app.mybatis.mappers.WcMapper">
+
+	<!-- 게시판 정보 -->
+	<resultMap id="wcBbsResultMap" type="com.wook.app.services.wc.vo.WcBbsVo" >
+		<result column="bbs_sn"					property="bbsSn"       			jdbcType="DECIMAL" 	/>
+		<result column="bbs_se"					property="bbsSe"       			jdbcType="CHAR" 	/>
+		<result column="bbs_ttl"				property="bbsTtl"       		jdbcType="VARCHAR" 	/>
+		<result column="bbs_cn"					property="bbsCn"      			jdbcType="VARCHAR" 	/>
+		<result column="bbs_hits"				property="bbsHits"				jdbcType="DECIMAL" 	/>
+		<result column="bbs_fix_yn"				property="bbsFixYn"       		jdbcType="CHAR" 	/>
+		<result column="pstg_bgng_ymd"			property="pstgBgngYmd"     		jdbcType="CHAR" 	/>
+		<result column="pstg_end_ymd"			property="pstgEndYmd"      		jdbcType="CHAR" 	/>
+		<result column="use_yn"					property="useYn"      			jdbcType="CHAR" 	/>
+		<result column="mdfcn_ymd"				property="mdfcnYmd"       		jdbcType="CHAR" 	/>
+		<result column="mdfr_id"				property="mdfrId"       		jdbcType="VARCHAR" 	/>
+		<result column="mdfr_ip"				property="mdfrIp"       		jdbcType="VARCHAR" 	/>
+		<result column="rmks"					property="rmks"       			jdbcType="VARCHAR" 	/>
+		
+		<result column="rownum"					property="rownum"       		jdbcType="DECIMAL" 	/>
+		<result column="total_count"			property="totalCount"       	jdbcType="DECIMAL" 	/>
+		<result column="page"					property="page"       			jdbcType="DECIMAL" 	/>
+	</resultMap>
+	
+	<!-- 게시판 첨부파일 -->
+	<resultMap id="wcBbsFileResultMap" type="com.wook.app.services.wc.vo.WcBbsFileVo">
+		<result column="bbs_file_sn" 			property="bbsFileSn"			jdbcType="DECIMAL" 	/>
+		<result column="bbs_sn" 				property="bbsSn"				jdbcType="DECIMAL" 	/>
+		<result column="file_sn" 				property="fileSn"				jdbcType="DECIMAL" 	/>
+	</resultMap>
+
+	<!-- 게시판 첨부파일 확장 -->
+	<resultMap id="wcBbsFileExtendsResultMap" type="com.wook.app.services.wc.vo.WcBbsFileExtendsVo" extends="wcBbsFileResultMap">
+		<result column="file_se" 				property="fileSe"				jdbcType="VARCHAR"	/>
+		<result column="file_nm" 				property="fileNm"				jdbcType="VARCHAR"	/>
+		<result column="file_orgnl_nm"			property="fileOrgnlNm"			jdbcType="VARCHAR"	/>
+		<result column="file_extn"				property="fileExtn"				jdbcType="VARCHAR"	/>
+		<result column="file_path"				property="filePath"				jdbcType="VARCHAR"	/>
+		<result column="file_sz"				property="fileSz"				jdbcType="VARCHAR"	/>
+	</resultMap>
+	
+	<select id="selectWcBbsList" parameterType="hashmap" resultMap="wcBbsResultMap">
+		SELECT 
+			  rownum
+			, bbs_sn
+			, bbs_se
+			, bbs_ttl
+			, bbs_cn
+			, bbs_hits
+			, bbs_fix_yn
+			, use_yn
+			, mdfcn_ymd
+			, mdfr_id
+			, mdfr_ip
+			, total_count
+			, page
+		FROM 
+		(
+				SELECT
+					  ROW_NUMBER() OVER(ORDER BY bbs_sn DESC) AS rownum
+					, wbt.bbs_sn
+					, wbt.bbs_se
+					, wbt.bbs_ttl
+					, wbt.bbs_cn
+					, wbt.bbs_hits
+					, wbt.bbs_fix_yn
+					, wbt.use_yn
+					, mdfcn_ymd
+					, wbt.mdfr_id
+					, mdfr_ip
+					, CEIL( (ROW_NUMBER() OVER(ORDER BY wbt.bbs_sn DESC)) / CAST(#{rows} AS NUMERIC) ) AS page
+					, COUNT(*) OVER() AS total_count
+				FROM
+					  ctsv.wc_bbs_t wbt
+				<where>
+					  wbt.use_yn = 'Y'
+					<if test="gubun != '' and keyword != '' ">
+						<choose>
+							<when test="gubun eq '0'.toString()">
+								AND ( bbs_ttl LIKE CONCAT('%', #{keyword}, '%') OR bbs_cn LIKE CONCAT('%', #{keyword}, '%') )
+							</when>
+							<when test="gubun eq '1'.toString()">
+								AND bbs_ttl LIKE CONCAT('%', #{keyword}, '%')
+							</when>
+							<when test="gubun eq '2'.toString()">
+								AND bbs_cn LIKE CONCAT('%', #{keyword}, '%')
+							</when>
+							<otherwise></otherwise>
+						</choose>
+					</if>
+				</where>
+				order by rownum
+		) AS main
+		WHERE 
+			page = CAST(#{page} AS NUMERIC)
+	</select>
+	
+	<select id="getWcBbsInfo" parameterType="hashmap" resultMap="wcBbsResultMap">
+		SELECT
+			  bbs_sn
+			, bbs_se
+			, bbs_ttl
+			, bbs_cn
+			, bbs_hits
+			, bbs_fix_yn
+			, pstg_bgng_ymd
+			, pstg_end_ymd
+			, use_yn
+			, mdfcn_ymd
+			, mdfr_id
+			, rmks
+		FROM
+			ctsv.wc_bbs_t
+		WHERE 
+			use_yn = 'Y'
+			AND bbs_sn = CAST(#{bbsSn} AS NUMERIC)
+	</select>
+	
+	<select id="getWcBbsFileList" parameterType="hashmap" resultMap="wcBbsFileExtendsResultMap">
+		SELECT
+				  bf.bbs_sn						/* 게시판_순번 */
+				, bf.bbs_file_sn				/* 게시판파일_순번 */
+				, bf.file_sn					/* 파일_순번 */
+				, cf.file_se					/* 파일_구분 */
+				, cf.file_nm					/* 파일_이름 */
+				, cf.file_orgnl_nm				/* 파일_원본_이름 */
+				, cf.file_extn					/* 파일_확장자 */
+				, cf.file_path					/* 파일_경로 */
+				, cf.file_sz					/* 파일_크기 */
+		FROM
+				  ctsv.wc_bbs_file_t bf, comn.cm_file_t cf
+		WHERE
+				  bf.file_sn 			= cf.file_sn
+				  AND bf.bbs_sn 		= CAST(#{bbsSn} AS NUMERIC)
+				  AND cf.file_se 		= #{fileSe}
+		ORDER BY
+				  bf.bbs_file_sn desc
+	</select>
+	
+	<insert id="insertWcBbsFile" parameterType="com.wook.app.services.wc.vo.WcBbsFileVo">
+		<selectKey keyProperty="bbsFileSn" resultType="java.math.BigDecimal" order="BEFORE">
+			SELECT nextval('ctsv.wc_bbs_file_t_sq');
+		</selectKey>
+		INSERT INTO   ctsv.wc_bbs_file_t (
+					  bbs_file_sn		/* 게시판_파일_순번 */
+					, bbs_sn			/* 게시판_순번 */
+					, file_sn			/* 파일_순번 */
+		)
+		VALUES (
+					  CAST(#{bbsFileSn} 	AS NUMERIC)
+					, CAST(#{bbsSn} 		AS NUMERIC)
+					, CAST(#{fileSn} 		AS NUMERIC)
+		)
+	</insert>
+	
+	<delete id="deleteWcBbsFile" parameterType="java.util.List">
+		DELETE
+		FROM		ctsv.wc_bbs_file_t
+		WHERE		file_sn IN
+		<foreach collection="list" item="bbsFileSn" open="(" close=")" separator=",">
+			CAST(#{bbsFileSn} AS NUMERIC)
+		</foreach>
+	</delete>
+	
+	<insert id="insertWcBbs" parameterType="com.wook.app.services.wc.vo.WcBbsVo">
+		<selectKey keyProperty="bbsSn" resultType="java.math.BigDecimal" order="BEFORE">
+			SELECT nextval('ctsv.wc_bbs_t_sq');
+		</selectKey>
+		INSERT INTO ctsv.wc_bbs_t
+		(
+			  bbs_sn
+			, bbs_se
+			, bbs_ttl
+			, bbs_cn
+			, bbs_fix_yn
+			, pstg_bgng_ymd
+			, pstg_end_ymd
+			, use_yn
+			, mdfr_id
+			, mdfr_ip
+			, rmks
+		) VALUES (
+			  CAST(#{bbsSn} AS NUMERIC)
+			, #{bbsSe}
+			, #{bbsTtl}
+			, #{bbsCn}
+			, #{bbsFixYn}
+			, #{pstgBgngYmd}
+			, #{pstgEndYmd}
+			, #{useYn}
+			, #{mdfrId}
+			, #{mdfrIp}
+			, #{rmks}
+		)
+	</insert>
+	
+	<update id="updateWcBbs" parameterType="com.wook.app.services.wc.vo.WcBbsVo">
+		UPDATE
+			  ctsv.wc_bbs_t
+		SET
+			  bbs_ttl 		= #{bbsTtl}
+			, bbs_cn 		= #{bbsCn}
+			, bbs_fix_yn 	= #{bbsFixYn}
+		<if test="pstgBgngYmd != null and pstgBgngYmd != ''">
+			, pstg_bgng_ymd = #{pstgBgngYmd}
+		</if>
+		<if test="pstgEndYmd != null and pstgEndYmd != ''">
+			, pstg_end_ymd 	= #{pstgEndYmd}
+		</if>
+			, rmks 			= #{rmks}
+		WHERE 
+			  bbs_sn 		= CAST(#{bbsSn} AS NUMERIC)
+	</update>
+	
+	<update id="deleteWcBbs" parameterType="com.wook.app.services.wc.vo.WcBbsVo">
+		UPDATE 
+			  ctsv.wc_bbs_t
+		SET
+			  use_yn = 'N'
+		WHERE
+			  bbs_sn = CAST(#{bbsSn} AS NUMERIC)
+	</update>
+</mapper>

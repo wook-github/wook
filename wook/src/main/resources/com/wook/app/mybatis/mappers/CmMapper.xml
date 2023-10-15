@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wook.app.mybatis.mappers.CmMapper">
+	
+	<!--
+	================================
+	  1.  공통파일 관리
+	================================
+	 -->
+
+	<!-- 공통파일관리 -->
+	<resultMap id="cmFileResultMap" type="com.wook.app.services.cm.vo.CmFileVo">
+		<result column="file_sn" 		property="fileSn" 			jdbcType="DECIMAL" 	/>
+		<result column="file_se" 		property="fileSe" 			jdbcType="CHAR" 	/>
+		<result column="file_nm" 		property="fileNm" 			jdbcType="VARCHAR" 	/>
+		<result column="file_orgnl_nm"	property="fileOrgnlNm" 		jdbcType="VARCHAR" 	/>
+		<result column="file_extn" 		property="fileExtn" 		jdbcType="VARCHAR" 	/>
+		<result column="file_path" 		property="filePath"			jdbcType="VARCHAR" 	/>
+		<result column="file_sz" 		property="fileSz"			jdbcType="DECIMAL" 	/>
+		<result column="mdfcn_ymd" 		property="mdfcnYmd" 		jdbcType="CHAR" 	/>
+		<result column="mdfr_id" 		property="mdfrId" 			jdbcType="CHAR" 	/>
+		<result column="rmks" 			property="rmks" 			jdbcType="VARCHAR" 	/>
+	</resultMap>
+	
+	<!-- 파일정보 조회 -->
+	<select id="getCmFileInfo" parameterType="java.math.BigDecimal" resultMap="cmFileResultMap">
+		SELECT
+				  file_sn
+				, file_se
+				, file_nm
+				, file_orgnl_nm
+				, file_extn
+				, file_path
+				, file_sz
+				, mdfcn_ymd
+				, mdfr_id
+				, rmks
+		FROM	comn.cm_file_t
+		WHERE	file_sn = CAST(#{fileSn} AS NUMERIC)
+	</select>
+
+
+ 	<!-- 파일정보를 등록한다. -->
+	<insert id="insertCmFile" parameterType="com.wook.app.services.cm.vo.CmFileVo">
+		<selectKey keyProperty="fileSn" resultType="java.math.BigDecimal" order="BEFORE">
+			select nextval('comn.cm_file_t_sq')
+		</selectKey>
+		INSERT INTO comn.cm_file_t (
+			  file_sn
+			, file_se
+			, file_nm
+			, file_orgnl_nm
+			, file_extn
+			, file_path
+			, file_sz
+			, mdfcn_ymd
+			, mdfr_id
+			, rmks
+		) VALUES (
+			  #{fileSn}
+			, #{fileSe}
+			, to_char(now(), 'YYYYMMDD') || '_' || #{fileSn} || '.' || #{fileExtn}
+			, #{fileOrgnlNm}
+			, #{fileExtn}
+			, #{filePath}
+			, #{fileSz}
+			, to_char(now(), 'YYYYMMDD')
+			, #{mdfrId}
+			, #{rmks}
+		)
+	</insert>
+
+	<!-- 파일정보를 수정한다. -->
+	<update id="updateCmFile" parameterType="com.wook.app.services.cm.vo.CmFileVo" >
+		UPDATE 	comn.cm_file_t
+		SET 	  file_se 		= #{fileSe}
+				, file_nm 		= to_char(now(), 'yyyymmdd') || '_' || #{fileSn} || '.' || #{fileExt}
+				, file_orgnl_nm	= #{fileOrgnlNm}
+				, file_extn		= #{fileExtn}
+				, file_path		= #{filePath}
+				, file_sz 		= #{fileSz}
+				, mdfcn_ymd		= to_char(now(), 'YYYYMMDD')
+				, mdfr_id		= #{mdfrId}
+				, rmks			= #{rmks}
+		WHERE 	file_sn 		= CAST(#{fileSn} as NUMERIC)
+	</update>
+
+
+	<!--  파일정보를 삭제한다. -->
+	<delete id="deleteCmFile" parameterType="java.math.BigDecimal" >
+		DELETE
+		FROM   comn.cm_file_t
+		WHERE  file_sn = CAST(#{fileSn} AS NUMERIC)
+	</delete>
+	
+</mapper>

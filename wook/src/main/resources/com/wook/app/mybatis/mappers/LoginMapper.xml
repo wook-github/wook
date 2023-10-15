@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wook.app.mybatis.mappers.LoginMapper">
+
+	<resultMap id="loginResultMap" type="com.wook.app.services.login.vo.LoginVo" >
+		<result column="user_id"					property="userId"       			jdbcType="VARCHAR" />
+		<result column="user_pw"					property="userPswd"       			jdbcType="VARCHAR" />
+		<result column="user_nm"					property="userNm"       			jdbcType="VARCHAR" />
+		<result column="join_ymd"					property="joinYmd"       			jdbcType="CHAR" />
+		<result column="aprv_yn"					property="aprvYn"       			jdbcType="CHAR" />
+		<result column="aprv_ymd"					property="aprvYmd"       			jdbcType="CHAR" />
+		<result column="autzr_id"					property="autzrId"       			jdbcType="VARCHAR" />
+		<result column="whdwl_yn"					property="whdwlYn"       			jdbcType="CHAR" />
+		<result column="whdwl_ymd"					property="whdwlYmd"       			jdbcType="CHAR" />
+		<result column="use_yn"						property="useYn"       				jdbcType="CHAR" />
+		<result column="mdfcn_ymd"					property="mdfcnYmd"       			jdbcType="CHAR" />
+		<result column="mdfr_id"					property="mdfrId"       			jdbcType="VARCHAR" />
+		<result column="mdfr_ip"					property="mdfrIp"       			jdbcType="VARCHAR" />
+		<result column="rmks"						property="rmks"       				jdbcType="VARCHAR" />
+	</resultMap>
+
+</mapper>

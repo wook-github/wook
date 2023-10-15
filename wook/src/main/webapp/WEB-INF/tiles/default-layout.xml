@@ -1,0 +1,43 @@
+<!DOCTYPE tiles-definitions PUBLIC
+  "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+  "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+
+<tiles-definitions>
+
+	<definition name="*/*Detail" template="/WEB-INF/tiles/empty.jsp">
+    	<put-attribute name="body" value="/WEB-INF/views/{1}/{2}Detail.jsp" />
+    </definition>
+
+	<!-- 화면의 기초가 되는 base -->
+    <definition name="base" template="/WEB-INF/tiles/template.jsp">
+    	<put-attribute name="include"   value="/WEB-INF/views/main/include.jsp" />
+    	<put-attribute name="header" 	value="/WEB-INF/views/main/header.jsp" />
+    	<put-attribute name="nav"		value="/WEB-INF/views/main/nav.jsp" />
+        <put-attribute name="body"   	value="" />
+        <put-attribute name="footer" 	value="/WEB-INF/views/main/footer.jsp" />
+    </definition>
+
+	<!-- 화면의 기초가 되는 nonNavBase -->
+    <definition name="nonNavBase" template="/WEB-INF/tiles/nonNavTemplate.jsp">
+    	<put-attribute name="include"   value="/WEB-INF/views/main/include.jsp" />
+    	<put-attribute name="header" 	value="/WEB-INF/views/main/header.jsp" />
+        <put-attribute name="body"   	value="" />
+        <put-attribute name="footer" 	value="/WEB-INF/views/main/footer.jsp" />
+    </definition>
+
+	<!-- 메인폴더 -->
+	<definition name="main/**" template="/WEB-INF/tiles/empty.jsp">
+        <put-attribute name="body" value="/WEB-INF/views/main/{1}.jsp" />
+    </definition>
+
+
+	<!-- 일괄 처리 항목 리스트 -->
+	<definition name="*" extends="nonNavBase">
+        <put-attribute name="body" value="/WEB-INF/views/{1}.jsp" />
+    </definition>
+
+    <definition name="*/*Ma" extends="nonNavBase">
+    	<put-attribute name="body" value="/WEB-INF/views/{1}/{2}Ma.jsp" />
+    </definition>
+    
+</tiles-definitions>
