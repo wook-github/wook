@@ -25,5 +25,7 @@ public interface WcService {
 	
 	public HashMap<String, Object> updateWcBbs(HashMap<String, Object> param, List<MultipartFile> fileList, HttpServletRequest request);
 	
+	public HashMap<String, Object> updateWcBbs(WcBbsVo wcBbsInfo);
+	
 	public HashMap<String, Object> deleteWcBbs(HashMap<String, Object> param);
 }

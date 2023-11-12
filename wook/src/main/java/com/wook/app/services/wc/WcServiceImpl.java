@@ -263,6 +263,31 @@ public class WcServiceImpl implements WcService {
 			return result;
 		}
 	}
+	
+	@Override
+	public HashMap<String, Object> updateWcBbs(WcBbsVo wcBbsInfo) {
+		HashMap<String, Object> result = new HashMap<String, Object>();
+		String messageTitle = "조회수 증가";
+		try {
+			WcBbsVo bbsInfo = new WcBbsVo();
+			bbsInfo.setBbsSn(wcBbsInfo.getBbsSn());
+			bbsInfo.setBbsHits(wcBbsInfo.getBbsHits().add(new BigDecimal(1)));
+			
+			if(wcDao.updateWcBbs(bbsInfo) > 0) {
+				result.put("status", "fail");
+				result.put("message", "게시판 " + messageTitle + " 성공");
+			} else {
+				result.put("status", "fail");
+				result.put("message", "게시판 " + messageTitle + " 실패");	
+			}
+			return result;
+		} catch(DataAccessException e) {
+			LOG.error(e.getMessage());
+			result.put("status", "fail");
+			result.put("message", "게시판 " + messageTitle + " 실패");
+			return result;
+		}
+	}
 
 	@Override
 	public HashMap<String, Object> deleteWcBbs(HashMap<String, Object> param) {

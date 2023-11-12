@@ -199,17 +199,29 @@
 	<update id="updateWcBbs" parameterType="com.wook.app.services.wc.vo.WcBbsVo">
 		UPDATE
 			  ctsv.wc_bbs_t
-		SET
-			  bbs_ttl 		= #{bbsTtl}
-			, bbs_cn 		= #{bbsCn}
-			, bbs_fix_yn 	= #{bbsFixYn}
-		<if test="pstgBgngYmd != null and pstgBgngYmd != ''">
-			, pstg_bgng_ymd = #{pstgBgngYmd}
-		</if>
-		<if test="pstgEndYmd != null and pstgEndYmd != ''">
-			, pstg_end_ymd 	= #{pstgEndYmd}
-		</if>
-			, rmks 			= #{rmks}
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="bbsTtl != null and bbsTtl != ''">
+				bbs_ttl = #{bbsTtl},
+			</if>
+			<if test="bbsCn != null and bbsCn != ''">
+				bbs_cn = #{bbsCn},
+			</if>
+			<if test="bbsHits != null and bbsHits != ''">
+				bbs_hits = CAST(#{bbsHits} AS NUMERIC),
+			</if>
+			<if test="bbsFixYn != null and bbsFixYn != ''">
+				bbs_fix_yn = #{bbsFixYn},
+			</if>
+			<if test="pstgBgngYmd != null and pstgBgngYmd != ''">
+				pstg_bgng_ymd = #{pstgBgngYmd},
+			</if>
+			<if test="pstgEndYmd != null and pstgEndYmd != ''">
+				pstg_end_ymd 	= #{pstgEndYmd},
+			</if>
+			<if test="rmks != null and rmks != ''">
+				rmks 	= #{rmks},
+			</if>
+		</trim>
 		WHERE 
 			  bbs_sn 		= CAST(#{bbsSn} AS NUMERIC)
 	</update>

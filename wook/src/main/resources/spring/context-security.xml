@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:s="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans		http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/security 	http://www.springframework.org/schema/security/spring-security.xsd" >
+                                       
+	<s:http auto-config="true" use-expressions="true">
+		
+		<!-- <s:intercept-url pattern="/resources/**" access="permitAll" /> -->
+		
+		<!-- <s:intercept-url pattern="/**" access="ROLE_USER" /> -->
+	</s:http>
+	
+	<s:authentication-manager>
+		<s:authentication-provider>
+			<s:user-service>
+				<s:user name="user" password="user" authorities="ROLE_USER" />
+				<s:user name="guest" password="guest" authorities="ROLE_GUEST" />
+			</s:user-service>
+		</s:authentication-provider>
+	</s:authentication-manager>
+	
+	<bean id="defaultHttpFirewall" class="org.springframework.security.web.firewall.DefaultHttpFirewall" />
+	
+	<s:http-firewall ref="defaultHttpFirewall" />
+	
+</beans>

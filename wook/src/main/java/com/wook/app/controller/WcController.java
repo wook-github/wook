@@ -6,8 +6,6 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +22,7 @@ import com.wook.app.services.wc.vo.WcBbsVo;
 @RequestMapping("/wc")
 public class WcController {
 
-	private static final Logger logger = LoggerFactory.getLogger(WcController.class);
+	//private static final Logger logger = LoggerFactory.getLogger(WcController.class);
 
 	@Autowired private WcService wcService;
 
@@ -65,6 +63,9 @@ public class WcController {
 	@RequestMapping(value="/wcBbsDetail", method= {RequestMethod.GET, RequestMethod.POST})
 	public ModelAndView getWcBbsDetail(@RequestParam HashMap<String, Object> param, ModelAndView model) throws Exception {
 		WcBbsVo wcBbsInfo = wcService.getWcBbsInfo(param);
+		if(wcBbsInfo != null) {
+			wcService.updateWcBbs(wcBbsInfo);
+		}
 		
 		model.addObject("wcBbsInfo", wcBbsInfo);
 		model.addObject("info", param);
