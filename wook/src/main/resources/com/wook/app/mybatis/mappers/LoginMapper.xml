@@ -5,7 +5,7 @@
 
 	<resultMap id="loginResultMap" type="com.wook.app.services.login.vo.LoginVo" >
 		<result column="user_id"					property="userId"       			jdbcType="VARCHAR" />
-		<result column="user_pw"					property="userPswd"       			jdbcType="VARCHAR" />
+		<result column="user_pswd"					property="userPswd"       			jdbcType="VARCHAR" />
 		<result column="user_nm"					property="userNm"       			jdbcType="VARCHAR" />
 		<result column="join_ymd"					property="joinYmd"       			jdbcType="CHAR" />
 		<result column="aprv_yn"					property="aprvYn"       			jdbcType="CHAR" />
@@ -19,5 +19,36 @@
 		<result column="mdfr_ip"					property="mdfrIp"       			jdbcType="VARCHAR" />
 		<result column="rmks"						property="rmks"       				jdbcType="VARCHAR" />
 	</resultMap>
+	
+	<resultMap id="userDetailsResultMap" type="com.wook.app.services.login.vo.UserDetailsVo" >
+		<result column="user_id"					property="username"       			jdbcType="VARCHAR" />
+		<result column="user_pw"					property="password"       			jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="getLoginInfo" parameterType="hashmap" resultMap="loginResultMap">
+		SELECT
+			  user_id
+			, user_pswd
+			, user_nm
+			, join_ymd
+			, aprv_yn
+			, aprv_ymd
+			, autzr_id
+			, whdwl_yn
+			, whdwl_ymd
+		FROM
+			  comm.cm_user_t
+		WHERE
+			  user_id = #{username}
+	</select>
+	
+	<select id="getLoginAuthrtList" parameterType="hashmap" resultType="java.util.List">
+		SELECT
+			  authrt_cd
+		FROM
+			  comm.cm_user_scrty_t
+		WHERE
+			  user_id = #{username}
+	</select>
 
 </mapper>

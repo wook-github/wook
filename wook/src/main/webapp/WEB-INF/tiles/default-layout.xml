@@ -7,6 +7,10 @@
 	<definition name="*/*Detail" template="/WEB-INF/tiles/empty.jsp">
     	<put-attribute name="body" value="/WEB-INF/views/{1}/{2}Detail.jsp" />
     </definition>
+	
+	<definition name="login/*" template="/WEB-INF/tiles/empty.jsp">
+    	<put-attribute name="body" value="/WEB-INF/views/login/{1}.jsp" />
+    </definition>
 
 	<!-- 화면의 기초가 되는 base -->
     <definition name="base" template="/WEB-INF/tiles/template.jsp">

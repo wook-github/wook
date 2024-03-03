@@ -256,7 +256,9 @@ Pager.prototype = {
 
 		if (this.getItemTotal() > 0) {
 			htmlStr+= "검색결과 : ";
-			htmlStr+= "<span style=\"font-weight:bold;color:#FF9900;\">" + this.getItemTotal() + "항목 (" + this.getSelectIndex() + "/" + this.getPageTotalCount() + ")<\/span>&nbsp;페이지";
+			htmlStr+= "<span style=\"font-weight:bold;color:#FF9900;\">";
+			htmlStr+= this.getItemTotal().toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+			htmlStr+= "항목 (" + this.getSelectIndex() + "/" + this.getPageTotalCount().toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ")<\/span>&nbsp;페이지";
 			totalPageObj.show();
 		} else {
 			totalPageObj.hide();

@@ -28,7 +28,6 @@ public class MainController {
 		model.addObject("info", param);
 
 		model.setViewName("main/main");
-		//model.setViewName("redirect:/board/boardMa.do");
 		return model;
 	}
 

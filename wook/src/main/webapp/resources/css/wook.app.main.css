@@ -84,7 +84,6 @@ button {
 
 a, span {
 	display: inline-block;
-	vertical-align: middle;
 }
 
 a {
@@ -633,6 +632,23 @@ footer	{
 	}
 }
 */
+
+/* -----------------------------
+	Pagination
+----------------------------- */
+.pagination {clear:both; position:relative; margin:30px auto 40px 0; padding:0; text-align:center;}
+.pagination:last-child {padding-bottom:0;}
+.pagination a,
+.pagination strong,
+.pagination .control {overflow:hidden; display:inline-block; position:relative; min-width:32px; height:32px; margin:0 2px; padding:0 2px; line-height:31px; border:1px solid #fff; text-decoration:none; color:#666; font-weight:400; vertical-align:middle; border-radius:0;}
+.pagination .active {color:#2775c4; border-color:#3671c8;}
+.pagination a:hover {border-color:#2775c4;}
+.pagination .control {overflow:hidden; width:32px; height:32px; min-width:0; padding:0; border:1px solid #ccc; font-size:0; line-height:0; text-indent:-9999px; background:url(../images/page/btn-pagination.png) no-repeat 0 0; }
+.pagination .control.disabled {cursor:default;}
+.pagination .control.first {margin:0; background-position:0 0;}
+.pagination .control.prev {margin:0 6px 0 0; background-position:-30px 0;}
+.pagination .control.next {margin:0 0 0 6px; background-position:-60px 0;}
+.pagination .control.last {margin:0; background-position:-90px 0;}
 
 /* -----------------------------
 	Customs Layout

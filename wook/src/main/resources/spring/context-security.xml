@@ -4,14 +4,100 @@
 	xmlns:s="http://www.springframework.org/schema/security"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans		http://www.springframework.org/schema/beans/spring-beans.xsd
 						http://www.springframework.org/schema/security 	http://www.springframework.org/schema/security/spring-security.xsd" >
-                                       
-	<s:http auto-config="true" use-expressions="true">
+    
+    <!-- 
+    관리자 로그인 설정                                   
+	<s:authentication-manager id="adminAuthManager">
+		<s:authentication-provider ref="adminAuthProvider" />
+	</s:authentication-manager>
+	
+	<bean id="adminAuthProvider" class="com.wook.app.services.login.LoginServiceImpl" />
+	
+	<bean id="adminAuthSuccessHandler" class="com.wook.app.utility.handler.AdminAuthSuccessHandler">
+		<property name="defaultUrl" value="/admin/main" />
+	</bean>
+	
+	<bean id="adminAuthFailureHandler" class="com.wook.app.utility.handler.AdminAuthFailureHandler">
+		<property name="errorMessage" value="" />
+		<property name="defaultFailUrl" value="/admin/login?status=error" />
+	</bean>
+	
+	<s:http pattern="/admin/**" auto-config="true" use-expressions="true" authentication-manager-ref="adminAuthManager">
+	
+		정적 리소스는 모두 접근 허용
+		<s:intercept-url pattern="/resources/**" access="permitAll" />
 		
-		<!-- <s:intercept-url pattern="/resources/**" access="permitAll" /> -->
+		로그인 페이지 및 회원가입 페이지는 로그인 상태에서는 접근 불가
+		<s:intercept-url pattern="/admin/loginView" access="permitAll" />
 		
-		<!-- <s:intercept-url pattern="/**" access="ROLE_USER" /> -->
+		관리자 페이지는 관리자만 접근 허용
+		<s:intercept-url pattern="/admin/**" access="hasAnyRole('ROLE_ADMIN')" />
+		
+		<s:form-login
+				username-parameter="adminUserId"
+				password-parameter="adminUserPswd"
+				login-processing-url="/admin/login"
+				login-page="/admin/loginView"
+				default-target-url="/admin/loginAccess"
+				authentication-failure-url="/admin/loginView?status=fail" />
+		
+		<s:logout
+				logout-url="/admin/logout"
+				logout-success-url="/admin/login?status=logout"
+				invalidate-session="true"
+				delete-cookies="true" />
+		
+		<s:session-management invalid-session-url="/admin/loginView">
+			<s:concurrency-control
+				max-sessions="1"
+				error-if-maximum-exceeded="false"
+				expired-url="/admin/loginDuplicate" />
+		</s:session-management>
+
 	</s:http>
 	
+	일반 사용자 로그인 설정
+	<s:authentication-manager id="memberAuthManager">
+		<s:authentication-provider ref="memberAuthProvider" />
+	</s:authentication-manager>
+	
+	<bean id="memberAuthProvider" class="com.wook.app.services.login.LoginServiceImpl" />
+	
+	<s:global-method-security secured-annotations="enabled" />
+	
+	<s:http pattern="/login/**" auto-config="true" use-expressions="false" authentication-manager-ref="memberAuthManager" >
+	
+		로그인 페이지 및 회원가입 페이지는 로그인 상태에서는 접근 불가
+		<s:intercept-url pattern="/login/loginView" 	access="isAnonymous()" />
+		<s:intercept-url pattern="/login/regUserView" 	access="isAnonymous()" />
+		
+		접근 권한 없는 경우 메인페이지로 이동
+		<s:access-denied-handler error-page="/main.do" />
+		
+		<s:form-login
+				username-parameter="userId"
+				password-parameter="userPswd"
+				login-processing-url="/login/login"
+				login-page="/login/loginView"
+				default-target-url="/login/login"
+				authentication-failure-url="/login/loginView?status=fail" />
+		
+		<s:logout
+				logout-url="/login/logout"
+				logout-success-url="/login/loginView"
+				invalidate-session="true"
+				delete-cookies="true" />
+				
+		<s:session-management invalid-session-url="/login/loginView">
+			<s:concurrency-control
+				max-sessions="1"
+				error-if-maximum-exceeded="false"
+				expired-url="/login/loginDuplicate" />
+		</s:session-management>
+
+	</s:http>
+	 -->
+	 
 	<s:authentication-manager>
 		<s:authentication-provider>
 			<s:user-service>

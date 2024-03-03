@@ -20,4 +20,7 @@ public class LoginVo extends CommVo {
 	private String autzrId;
 	private String whdwlYn;
 	private String whdwlYmd;
+	
+	private String authrtCd;
+	private String authrtNm;
 }
